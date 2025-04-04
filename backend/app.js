@@ -34,4 +34,4 @@ app.use("/api/v1/user", userRouter);
 //admin
 app.use("/api/v1/admin", adminRouter);
 
-export { app };
+export default app;
