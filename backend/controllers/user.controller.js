@@ -200,11 +200,13 @@ const router = express.Router(); // Initialize the router
 
 // Webhook Route to handle Stripe events
 export const stripeWebHooks = async (req, res) => {
-  console.log("into Webhook");
-  
   const sig = req.headers["stripe-signature"];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   let event;
+
+  // Log the signature and body
+  console.log("Webhook Signature:", sig);
+  console.log("Webhook Body:", req.body);
 
   // Verify webhook signature and retrieve event object
   try {
@@ -219,8 +221,8 @@ export const stripeWebHooks = async (req, res) => {
   // Handle different event types
   switch (event.type) {
     case "checkout.session.completed":
-      const session = event.data.object; // contains the session object
-      const { userId, roomId } = session.metadata; // assuming metadata contains userId and roomId
+      const session = event.data.object;
+      const { userId, roomId } = session.metadata;
 
       try {
         // Find the room
@@ -232,7 +234,7 @@ export const stripeWebHooks = async (req, res) => {
         // Create a booking record with status "Completed"
         const booking = new Booking({
           room: room._id,
-          user: userId, // The userId from the metadata
+          user: userId,
           paymentStatus: "Completed",
         });
 
@@ -258,7 +260,7 @@ export const stripeWebHooks = async (req, res) => {
         // Create a booking record with status "Failed"
         const failedBooking = new Booking({
           room: failedRoom._id,
-          user: failedUser, // The userId from the metadata
+          user: failedUser,
           paymentStatus: "Failed",
         });
 
@@ -277,6 +279,7 @@ export const stripeWebHooks = async (req, res) => {
   // Return a response to acknowledge receipt of the event
   res.status(200).send("Event received");
 };
+
 
 export default router;
 
