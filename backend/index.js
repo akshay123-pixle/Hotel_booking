@@ -4,10 +4,10 @@ import dotenv from "dotenv";
 import  app  from "./app.js";
 
 dotenv.config();
+connectDB();
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log("server listeing at PORT :", PORT);
 });
-connectDB();
 
 export default app;
