@@ -11,6 +11,6 @@ export const connectDB = async () => {
   } catch (error) {
     // Log error and exit process if DB connection fails
     console.error("DB connection failed:", error);
-    process.exit(1); // Exit process to signal failure
+    throw error;
   }
 };
