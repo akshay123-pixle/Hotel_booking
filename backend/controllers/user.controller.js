@@ -4,7 +4,7 @@ import { User } from "../models/user.model.js";
 import { Room } from "../models/room.model.js";
 import express from "express";
 import { Booking } from "../models/booking.model.js";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import Stripe from "stripe";
