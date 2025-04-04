@@ -1,12 +1,16 @@
 import mongoose from "mongoose";
+
 export const connectDB = async () => {
   try {
-    const res=await mongoose.connect(process.env.MONGO_URI);
-    console.log("DB Connected successfully");
+    // Connect to MongoDB using URI from environment variable
+    const res = await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("DB Connected successfully:", res.connection.host);
   } catch (error) {
-    console.log(
-      `DB could not connected please check database directory`,
-      error
-    );
+    // Log error and exit process if DB connection fails
+    console.error("DB connection failed:", error);
+    process.exit(1); // Exit process to signal failure
   }
 };
