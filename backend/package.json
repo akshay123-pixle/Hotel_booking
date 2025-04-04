@@ -6,8 +6,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "prod":"node index.js",
+    "prod": "node index.js",
     "start": "node index.js"
+  },
+  "engines": {
+    "node": "18.x"
   },
   "keywords": [],
   "author": "",
