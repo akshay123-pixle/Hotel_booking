@@ -200,6 +200,8 @@ const router = express.Router(); // Initialize the router
 
 // Webhook Route to handle Stripe events
 export const stripeWebHooks = async (req, res) => {
+  console.log("into Webhook");
+  
   const sig = req.headers["stripe-signature"];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   let event;
@@ -321,8 +323,8 @@ export const bookRoom = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:3001/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:3001/cancel`,
+      success_url: `http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `http://localhost:3000/cancel`,
       metadata: {
         user: String(userId), // Pass the userId as metadata
         roomId: String(roomId), // Pass the roomId as metadata
