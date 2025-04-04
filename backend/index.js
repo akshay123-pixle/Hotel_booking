@@ -1,11 +1,13 @@
 import express from "express";
-import { connectDB } from "./database/mongodb.js";
+import {connectDB} from "./databse/mongodb.js";
 import dotenv from "dotenv";
-import app from "./app.js";  // Import your Express app
+import  app  from "./app.js";
 
 dotenv.config();
 connectDB();
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log("server listeing at PORT :", PORT);
+});
 
-// You don't need to call app.listen() in serverless mode
-
-export default app;  // Export app for Vercel to handle
+export default app;
