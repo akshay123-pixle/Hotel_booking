@@ -199,17 +199,19 @@ export const getRoom = async (req, res) => {
 const router = express.Router(); // Initialize the router
 
 // Webhook Route to handle Stripe events
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 export const stripeWebHooks = async (req, res) => {
   const sig = req.headers["stripe-signature"];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   let event;
 
-  // Log the signature and body
-  console.log("Webhook Signature:", sig);
-  console.log("Webhook Body:", req.body);
+  // Log to verify that the raw body is being received properly
+  console.log("Received webhook body:", req.body.toString());
 
-  // Verify webhook signature and retrieve event object
   try {
+    // Construct the event using the raw body
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
     console.error("Webhook signature verification failed:", err.message);
@@ -225,7 +227,7 @@ export const stripeWebHooks = async (req, res) => {
       const { userId, roomId } = session.metadata;
 
       try {
-        // Find the room
+        // Find the room and create a booking record
         const room = await Room.findById(roomId);
         if (!room) {
           throw new Error("Room not found");
@@ -251,13 +253,12 @@ export const stripeWebHooks = async (req, res) => {
       const { failedUser, failedRoomId } = failedSession.metadata;
 
       try {
-        // Find the room for the failed payment
+        // Handle failed payment and create a booking record with status "Failed"
         const failedRoom = await Room.findById(failedRoomId);
         if (!failedRoom) {
           throw new Error("Room not found");
         }
 
-        // Create a booking record with status "Failed"
         const failedBooking = new Booking({
           room: failedRoom._id,
           user: failedUser,
@@ -283,7 +284,6 @@ export const stripeWebHooks = async (req, res) => {
 
 export default router;
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const bookRoom = async (req, res) => {
   try {
@@ -326,8 +326,8 @@ export const bookRoom = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:3000/cancel`,
+      success_url: `https://hotel-booking-eta-teal.vercel.app/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://hotel-booking-eta-teal.vercel.app/cancel`,
       metadata: {
         user: String(userId), // Pass the userId as metadata
         roomId: String(roomId), // Pass the roomId as metadata

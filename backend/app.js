@@ -23,9 +23,10 @@ app.get("/", (req, res) => {
 
 app.post(
   "/webhook",
-  express.raw({ type: "application/json" }), // Ensure raw parsing for Stripe webhook
+  express.raw({ type: "application/json" }),  // Ensure raw body for Stripe webhook
   stripeWebHooks
 );
+
 
 app.get("/success", (req, res) => {
   res.send("Payment successful!");
